@@ -350,9 +350,9 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
     const rangeStartTime = Date.now();
     const totalIdsInRange = end - start + 1;
     const results = {
-        found: [],
-        notFound: [],
-        errors: []
+        foundCount: 0,
+        notFoundCount: 0,
+        errorCount: 0
     };
     
     let phoneRecords = [];
@@ -411,7 +411,7 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
                              `${log.info(`Total: ${totalElapsedHours.toFixed(2)}h`)}`;
 
             if (result.found) {
-                results.found.push(result);
+                results.foundCount++;
                 foundValidIdInChunk = true;
                 
                 if (result.data.Telephone && result.data.Telephone !== 'N/A') {
@@ -438,7 +438,7 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
                     }
                 }
             } else if (result.error) {
-                results.errors.push(result);
+                results.errorCount++;
                 console.error(log.error(
                     `[${progress}%] ID ${id}: Error\n` +
                     `  Code: ${result.error.code}\n` +
@@ -446,7 +446,7 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
                     `  Message: ${result.error.message}`
                 ));
             } else {
-                results.notFound.push(result.id);
+                results.notFoundCount++;
                 console.log(
                     `${log.error(`[${progress}%] ID ${id}: Invalid or inactive member`)} | ` +
                     timingInfo
@@ -477,6 +477,7 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
     
     return { totalPhonesSaved, results };
 }
+
 
 // Modify main function
 async function main() {
@@ -515,9 +516,9 @@ async function main() {
             );
             
             console.log(log.highlight(`\nCompleted ${range.name} range. Results:`));
-            console.log(log.success(`- Found: ${results.found.length}`));
-            console.log(log.warning(`- Not Found: ${results.notFound.length}`));
-            console.log(log.error(`- Errors: ${results.errors.length}`));
+            console.log(log.success(`- Found: ${results.foundCount}`));
+            console.log(log.warning(`- Not Found: ${results.notFoundCount}`));
+            console.log(log.error(`- Errors: ${results.errorCount}`));
             console.log(log.success(`- Total Engineers with Phone Numbers: ${totalPhonesSaved}`));
         }
     } finally {
