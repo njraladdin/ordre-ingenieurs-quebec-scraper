@@ -50,11 +50,11 @@ let config = {
 
   // Add this near the top with other constants
   const DB_PATH = './data/engineers.db';
-  const PHONE_BATCH_SIZE = 5;
+  const PHONE_BATCH_SIZE = 20;
   const MAX_RETRIES = 3;
-  const RETRY_DELAY = 1000; // 1 second delay between retries
-  const CONCURRENCY_LIMIT = 10;  // Number of concurrent requests
-  const CHUNK_SIZE = 50;  // Process IDs in chunks of 100
+  const RETRY_DELAY = 500; // 1 second delay between retries
+  const CONCURRENCY_LIMIT = 15;  // Number of concurrent requests
+  const CHUNK_SIZE = 100;  // Process IDs in chunks of 100
   const limit = pLimit(CONCURRENCY_LIMIT);
 
   // Add these constants near the top
