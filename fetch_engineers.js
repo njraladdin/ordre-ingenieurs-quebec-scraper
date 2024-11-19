@@ -526,11 +526,5 @@ async function main() {
     }
 }
 
-(async () => {
-    try {
-        await main();
-        console.log(log.success('\nAll ranges completed successfully'));
-    } catch (error) {
-        console.error(log.error('Script failed:', error));
-    }
-})();
+// Modify the bottom to export the main function instead of running it
+module.exports = main;
