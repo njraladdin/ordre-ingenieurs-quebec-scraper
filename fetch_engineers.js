@@ -363,19 +363,18 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
     console.log(log.highlight(`\nStarting scan from ${start} to ${end} with ${CONCURRENCY_LIMIT} concurrent requests`));
     
     let isLightMode = false;
-    let foundValidIdInChunk = false;  // Simple flag
+    let foundValidIdInChunk = false;
 
     for (let chunkStart = start; chunkStart <= end; chunkStart += CHUNK_SIZE) {
+        foundValidIdInChunk = false;
+        
         const chunkEnd = Math.min(chunkStart + CHUNK_SIZE - 1, end);
         
         // Check if we should switch back to full mode based on previous chunk
-        if (foundValidIdInChunk && isLightMode) {
+        if (isLightMode && foundValidIdInChunk) {
             console.log(log.success('\nFound valid ID, switching back to FULL mode'));
             isLightMode = false;
         }
-        
-        // Reset flag for new chunk
-        foundValidIdInChunk = false;
         
         // Modify how we generate chunk IDs based on mode
         const chunkIds = Array.from(
@@ -460,9 +459,14 @@ async function scanRange(start, end, increment = 1, rangeName, db) {
         // Wait for current chunk to complete
         await Promise.all(promises);
 
+        console.log(log.info(`Chunk complete. Found valid IDs: ${foundValidIdInChunk}, Light mode: ${isLightMode}`));
+
         // Only check for switching TO light mode after chunk completes
         if (!foundValidIdInChunk && !isLightMode) {
-            console.log(log.warning(`\nNo valid IDs found in chunk ${chunkStart}-${chunkEnd}, switching to LIGHT mode`));
+            console.log(log.warning(
+                `\nNo valid IDs found in chunk ${chunkStart}-${chunkEnd}, switching to LIGHT mode\n` +
+                `Debug - foundValidIdInChunk: ${foundValidIdInChunk}, isLightMode: ${isLightMode}`
+            ));
             isLightMode = true;
         }
     }
