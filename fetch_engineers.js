@@ -343,7 +343,7 @@ async function getLastProcessedId(rangeName, db) {
 }
 
 // Add new constant
-const LIGHT_MODE_INCREMENT = 10;  // In light mode, only check every 10th ID
+const LIGHT_MODE_INCREMENT = 5;  // In light mode, only check every 10th ID
 
 // Modify scanRange function
 async function scanRange(start, end, increment = 1, rangeName, db) {
