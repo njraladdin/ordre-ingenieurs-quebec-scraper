@@ -172,6 +172,7 @@ let config = {
                 httpsAgent: currentProxy,  // Use current proxy
                 timeout: 20000
             };
+            console.log(url)
             const response = await axios(requestConfig);
             
             if (response.status !== 200) {
@@ -529,6 +530,6 @@ async function main() {
         await db.close();
     }
 }
-
+main()
 // Modify the bottom to export the main function instead of running it
 module.exports = main;
